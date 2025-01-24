@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabela Dinâmica</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+
+      margin: 36px;
+      padding: 0;
+      background-color: #144f90; /* Fundo azul */
+      color: #fff; /* Texto em branco */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    header {
+      background-color: #e83e8c; /* Cabeçalho com cor de fundo rosa */
+      padding: 10px;
+      width: 100%;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+    header img {
+      width: 100%;
+      height: auto;
+      max-width: 150px; /* Reduzindo o tamanho máximo da imagem */
+      margin: 0 auto;
+    }
+    table {
+      width: 90%;
+      max-width: 800px; /* Tamanho máximo da tabela no desktop */
+      border-collapse: collapse;
+      margin-top: 20px; /* Distância de 20px entre cabeçalho e tabela */
+      background-color: #ffcc00; /* Tabela com fundo amarelo */
+      border-radius: 15px; /* Borda arredondada */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 15px;
+      text-align: left;
+      color: #e83e8c; /* Texto da tabela com cor #e83e8c */
+      font-size: 26px;
+    }
+    th {
+      background-color: #f4f4f4;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    td input[type="number"] {
+  
+  
+    width: 135px;
+    padding: 0px;
+    text-align: center;
+    border-radius: 17px;
+    font-size: 25px;
+    border: 1px solid #ddd;
+    }
+    .total-container {
+      background-color: #e83e8c;
+      padding: 20px;
+      margin-top: 2px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .grand-total {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #dc3545; /* Total com cor de fundo destacada */
+      padding: 15px;
+      border-radius: 10px;
+    }
+    button {
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #28a745; /* Cor do botão */
+      color: #fff;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px; /* Borda arredondada do botão */
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #218838; /* Cor do botão quando hover */
+    }
+    /* Responsividade */
+    @media (max-width: 768px) {
+      table {
+        width: 90%; /* Ajustando a largura da tabela para celular */
+        max-width: 600px; /* Limite da tabela para celular */
+        margin-top: 20px; /* Distância de 20px para celular também */
+      }
+      td input[type="number"], th {
+        font-size: 14px;
+        padding: 8px; /* Ajustando o tamanho das células */
+      }
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+      .total-container {
+        background-color: #e83e8c;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 10px;
+        width: 80%; /* Largura ajustada para celular */
+        max-width: 360px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 8px;
+      }
+      table {
+        width: 90%; /* Ajustando a tabela para caber melhor no celular */
+        max-width: 400px; /* Ajustando o limite da tabela para celular */
+        margin-top: 20px; /* Distância ajustada para celular */
+      }
+      td input[type="number"], th {
+        font-size: 12px;
+        padding: 6px; /* Ajustando o tamanho das células */
+      }
+      button {
+        font-size: 14px;
+        padding: 8px 18px;
+      }
+      .total-container {
+        width: 100%;
+        max-width: 350px; /* Ajustando a largura da total-container para celular */
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img id="header-image" src="./img/style.png" alt="Imagem do Cabeçalho">
+</header>
+
+<table>
+  <thead>
+    <tr>
+      <th>Itens</th>
+      <th>Valor (R$)</th>
+      <th>Quantidade</th>
+      <th>Total (R$)</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <tr>
+      <td>Salão</td>
+      <td><input type="number" value="700.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="1" min="1" onchange="updateTotal(this)"></td>
+      <td class="item-total">700.00</td>
+    </tr>
+    <tr>
+      <td>Convidados</td>
+      <td><input type="number" value="0.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Jumpers</td>
+      <td><input type="number" value="0.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Meias</td>
+      <td><input type="number" value="30.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Ficha</td>
+      <td><input type="number" value="5.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Água</td>
+      <td><input type="number" value="7.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Cerveja</td>
+      <td><input type="number" value="15.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Bebida</td>
+      <td><input type="number" value="9.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Bolo</td>
+      <td><input type="number" value="200.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" placeholder="Kg" min="0" onchange="updateBolo(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Salgado</td>
+      <td><input type="number" value="3.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Doces</td>
+      <td><input type="number" value="3.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="0" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">0.00</td>
+    </tr>
+    <tr>
+      <td>Garçom</td>
+      <td><input type="number" value="250.00" onchange="updateTotal(this)"></td>
+      <td><input type="number" value="1" min="0" onchange="updateTotal(this)"></td>
+      <td class="item-total">250.00</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="total-container">
+  <div class="grand-total" id="grand-total">R$ 950,00</div>
+  <button onclick="calculateTotal()">TOTAL</button>
+</div>
+
+<script>
+  function updateTotal(input) {
+    const row = input.parentElement.parentElement;
+    const price = parseFloat(row.querySelectorAll('input[type="number"]')[0].value);
+    const quantity = parseFloat(row.querySelectorAll('input[type="number"]')[1].value) || 0;
+    const totalCell = row.querySelector('.item-total');
+    const total = (price * quantity).toFixed(2);
+    totalCell.textContent = total;
+    updateGrandTotal();
+  }
+
+  function updateBolo(input) {
+    const row = input.parentElement.parentElement;
+    const price = parseFloat(row.querySelectorAll('input[type="number"]')[0].value);
+    const weight = parseFloat(input.value) || 0;
+    const totalCell = row.querySelector('.item-total');
+    const total = (price * weight).toFixed(2);
+    totalCell.textContent = total;
+    updateGrandTotal();
+  }
+
+  function updateGrandTotal() {
+    const totals = document.querySelectorAll('.item-total');
+    let grandTotal = 0;
+    totals.forEach(cell => {
+      grandTotal += parseFloat(cell.textContent);
+    });
+    document.getElementById('grand-total').textContent = `R$ ${grandTotal.toFixed(2)}`;
+  }
+
+  function calculateTotal() {
+    updateGrandTotal();
+  }
+</script>
+
+</body>
+</html>
